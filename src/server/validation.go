@@ -11,7 +11,8 @@ func isRequestGet(req *http.Request) bool {
 }
 
 func isRequestAcceptApplicationJson(request *http.Request) bool {
-	return request.Header.Get(ACCEPT) == APPLICATION_JSON
+	accept := request.Header.Get(ACCEPT)
+	return accept == APPLICATION_JSON || accept == "" || accept == "*/*"
 }
 
 func isRequestApplicationJson(req *http.Request) bool {
