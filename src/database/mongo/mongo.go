@@ -1,4 +1,4 @@
-package database
+package mongodb
 
 import (
 	"context"
@@ -27,11 +27,37 @@ func NewMongo(uri string, databaseName string) (helpers.DataBase, error) {
 		return nil, err
 	}
 
+	database := client.Database(databaseName)
+
+	collectionNames, err := database.ListCollectionNames(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	for i := 0; i < len(collections); i++ {
+		collectionAlreadyExists := false
+		for _, collectionName := range collectionNames {
+			if collectionName == collections[i] {
+				collectionAlreadyExists = true
+				break
+			}
+		}
+
+		if collectionAlreadyExists {
+			continue
+		}
+
+		options := options.CreateCollection().SetValidator(getSchemaByCollectionName(collections[i]))
+		if err := database.CreateCollection(ctx, collections[i], options); err != nil {
+			return nil, err
+		}
+	}
+
 	// Return mongodb
 	return &_Mongo{
 		client:   client,
 		context:  &ctx,
-		database: client.Database(databaseName),
+		database: database,
 	}, nil
 }
 
