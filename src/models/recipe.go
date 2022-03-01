@@ -2,6 +2,7 @@ package models
 
 /// Recipe data model
 type RecipeData struct {
+	Id           string            `json:"id:omitempty" bson:"id,omitempty"`
 	Name         string            `json:"name,omitempty" bson:"name,omitempty"`
 	Cover        string            `json:"cover,omitempty" bson:"cover,omitempty"` // Image url
 	Category     string            `json:"category,omitempty" bson:"category,omitempty"`
